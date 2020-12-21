@@ -1,0 +1,33 @@
+version: "3.1"
+services:
+  postgres-db:
+    image: postgres:12
+    restart: always
+    mem_limit: 2048MB
+    mem_reservation: 1G
+    environment:
+      POSTGRES_USER: local_db_user
+      POSTGRES_PASSWORD: very_secretive123
+    ports:
+      - "5555:5432"
+    networks:
+      - pg_pgadmin_local
+    volumes:
+      - db-data:/var/lib/postgresql/data
+  pgadmin4-demo:
+    image: dpage/pgadmin4
+    restart: always
+    mem_limit: 2048MB
+    mem_reservation: 1G
+    environment:
+      PGADMIN_DEFAULT_EMAIL: localdeveloper@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: very_secretive123
+    ports:
+      - 7777:80
+    networks:
+      - pg_pgadmin_local
+networks:
+  pg_pgadmin_local:
+    driver: bridge
+volumes:
+  db-data:
