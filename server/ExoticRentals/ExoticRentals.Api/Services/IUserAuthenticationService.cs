@@ -1,13 +1,11 @@
-﻿using ExoticRentals.Api.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using ExoticRentals.Api.Models;
 
 namespace ExoticRentals.Api.Services
 {
     public interface IUserAuthenticationService
     {
         Task<AuthResult> AuthenticateAsync(AuthModel authModel);
+        Task<AuthResult> RefreshTokenAsync(string refreshToken);
     }
 }
