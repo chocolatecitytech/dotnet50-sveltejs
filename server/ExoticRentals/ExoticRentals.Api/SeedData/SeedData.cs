@@ -1,10 +1,9 @@
-﻿using ExoticRentals.Api.Entities;
-using ExoticRentals.Api.Settings;
-using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using ExoticRentals.Api.Entities;
+using ExoticRentals.Api.Settings;
+using Microsoft.AspNetCore.Identity;
 
 namespace ExoticRentals.Api.SeedData
 {
@@ -14,7 +13,7 @@ namespace ExoticRentals.Api.SeedData
         {
             //Seed Data
 
-            if (roleManager.Roles.Count() == 0)
+            if (!roleManager.Roles.Any())
             {
                 await roleManager.CreateAsync(new IdentityRole(ApplicationRoles.Admin.ToString()));
                 await roleManager.CreateAsync(new IdentityRole(ApplicationRoles.Manager.ToString()));
@@ -33,7 +32,7 @@ namespace ExoticRentals.Api.SeedData
                 Id = Guid.NewGuid().ToString(),
 
             };
-            if(userManager.Users.Count() == 0)
+            if (!userManager.Users.Any())
             {
                 await userManager.CreateAsync(testUser, "Secret123%#");
                 await userManager.AddToRoleAsync(testUser, ApplicationRoles.Staff.ToString());

@@ -135,5 +135,30 @@ namespace ExoticRentals.Api.Services
             cryptoProvider.GetBytes(randomBytes);
             return await Task.FromResult(Convert.ToBase64String(randomBytes));
         }
+
+        public async Task<bool> LogoutAsync(string refreshToken)
+        {
+            var user = await _context.Users
+                .Include(t => t.RefreshTokens)
+                .FirstOrDefaultAsync(u => u.RefreshTokens.Any(r => r.Token.Equals(refreshToken)));
+
+            if (user == null)
+            {
+                return false;
+            }
+
+            var existingToken = user.RefreshTokens
+                .FirstOrDefault(t => t.Token.Equals(refreshToken));
+
+            if (!existingToken.IsActive || DateTime.UtcNow >= existingToken.ExpiresOn)
+            {
+                return false;
+            }
+            existingToken.ExpiresOn = DateTime.UtcNow;
+            existingToken.IsActive = false;
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
     }
 }
