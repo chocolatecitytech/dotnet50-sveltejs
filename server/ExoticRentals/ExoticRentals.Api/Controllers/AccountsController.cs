@@ -32,15 +32,14 @@ namespace ExoticRentals.Api.Controllers
             if (!signInResult.IsAuthenticated)
                 return BadRequest("User name and/or password does not match.");
 
-            SetAuthenticationCookie(signInResult.RefreshToken);
-            return Ok(signInResult.Token);
+            //SetAuthenticationCookie(signInResult.RefreshToken);
+            return Ok(signInResult);
         }
         [HttpPost]
-        [AllowAnonymous]
         [Route("refresh-token")]
         public async Task<IActionResult> RefreshToken()
         {
-            var refreshToken = Request.Cookies[AuthSettings.REFRESH_TOKEN_COOKIE];
+            var refreshToken = Request.Headers[AuthSettings.REFRESH_TOKEN_HEADER];
             if (string.IsNullOrWhiteSpace(refreshToken))
                 return Unauthorized();
 
@@ -48,11 +47,26 @@ namespace ExoticRentals.Api.Controllers
             if (!result.IsAuthenticated)
                 return Unauthorized();
 
-            SetAuthenticationCookie(result.RefreshToken);
+            //SetAuthenticationCookie(result.RefreshToken);
 
-            return Ok(result.Token);
+            return Ok(result);
         }
-
+        [HttpPost]
+        [Route("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            var refreshToken = Request.Headers[AuthSettings.REFRESH_TOKEN_HEADER];
+            if (string.IsNullOrWhiteSpace(refreshToken))
+            {
+                return Unauthorized();
+            }
+            var result = await _authenticationService.LogoutAsync(refreshToken);
+            if (!result)
+            {
+                return Unauthorized();
+            }
+            return NoContent();
+        }
 
         [HttpGet]
         [Route("secret")]
