@@ -53,7 +53,8 @@ namespace ExoticRentals.Api
                 opt.AllowAnyHeader()
                 .WithExposedHeaders(AuthSettings.EXPIRED_TOKEN_HEADER) //https://stackoverflow.com/questions/37897523/axios-get-access-to-response-header-fields#answer-55714686
                 .AllowAnyMethod()
-                .WithOrigins("https://localhost:4001");
+                .AllowCredentials()
+                .WithOrigins("http://localhost:3000");
 
             }));
         }
@@ -68,7 +69,7 @@ namespace ExoticRentals.Api
                 app.UseCors("dev");
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
             app.UseRouting();
             app.UseAuthentication();
